@@ -9,13 +9,14 @@ from pathlib import Path
 
 SITE = Path(__file__).resolve().parent.parent
 
-# Web3Forms access key (public by design; it only lets the form email hongtphan@gmail.com).
+# Web3Forms access key (public by design; it only lets the form email estimates@hongsgcpl.com,
+# a linked email set as the recipient in the Web3Forms dashboard, which forwards to hong@).
 WEB3FORMS_KEY = "492fafe3-8454-4957-9095-edbc1853dd34"
 
 BASE = "https://hongsgcpl.com/"
 PHONE = "206-227-2275"
 TEL = "tel:+12062272275"
-EMAIL = "hongtphan@gmail.com"
+EMAIL = "estimates@hongsgcpl.com"
 CC = "HONGSGC825B5"
 PC = "HONGSGC791O7"
 CITIES = ["Seattle", "Bellevue", "Tacoma", "Everett", "Kent", "Federal Way", "Renton", "Auburn"]
