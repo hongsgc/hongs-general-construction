@@ -1,7 +1,7 @@
 name: Deploy to GitHub Pages
 on:
-  # push:  (re-enable at publish)
-  #  branches: [main]
+  push:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read

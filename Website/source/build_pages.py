@@ -1,0 +1,325 @@
+#!/usr/bin/env python3
+"""Render Website/index.html (EN) and Website/vi/index.html (VI) from one template.
+
+Edit copy in COPY below, then run:  python3 Website/source/build_pages.py
+"""
+import json
+from html import escape
+from pathlib import Path
+
+SITE = Path(__file__).resolve().parent.parent
+
+# Web3Forms access key (public by design; it only lets the form email hongtphan@gmail.com).
+WEB3FORMS_KEY = "492fafe3-8454-4957-9095-edbc1853dd34"
+
+BASE = "https://hongsgcpl.com/"
+PHONE = "206-227-2275"
+TEL = "tel:+12062272275"
+EMAIL = "hongtphan@gmail.com"
+CC = "HONGSGC825B5"
+PC = "HONGSGC791O7"
+CITIES = ["Seattle", "Bellevue", "Tacoma", "Everett", "Kent", "Federal Way", "Renton", "Auburn"]
+
+# Job photos from Hong go in assets/img/work/ and are listed here; the section stays hidden while empty.
+WORK_PHOTOS: list[tuple[str, dict]] = []  # (filename, {"en": alt, "vi": alt})
+
+COPY = {
+    "en": {
+        "html_lang": "en",
+        "title": "Hong's General Construction & Plumbing · New Homes & Plumbing · Seattle Area",
+        "meta": "New home construction from start to finish, plus residential and commercial plumbing. 35 years of experience, insured and bonded. Serving the Seattle area. Call 206-227-2275.",
+        "skip": "Skip to content",
+        "nav": [("services", "Services"), ("work", "Our work"), ("area", "Service area"), ("about", "About"), ("contact", "Contact")],
+        "lang_label": "Tiếng Việt", "lang_code": "vi", "lang_href": "vi/",
+        "call": "Call",
+        "logo_alt": "Hong's General Construction and Plumbing",
+        "eyebrow": "Based in Federal Way · serving the greater Seattle area",
+        "h1": "New homes built start to finish. Plumbing for homes and businesses.",
+        "lede": "35 years of experience. Registered with Washington L&I, fully insured and bonded.",
+        "cta_call": f"Call {PHONE}", "cta_quote": "Request an estimate",
+        "photo_alt": "Hong at the controls of an excavator on a job site",
+        "trust_label": "At a glance",
+        "trust": [("35 years", "of experience"), ("Insured & bonded", "fully covered"),
+                  ("Seattle + 2 hours", "service area"), ("English · Tiếng Việt", "we speak both")],
+        "svc_h": "What we do",
+        "svc_p": "Construction and plumbing from one company. The same team builds your home and does its plumbing.",
+        "home_h": "New home construction",
+        "home_p": "We build new homes from the ground up. One contractor runs the whole project, from breaking ground to move-in day.",
+        "home_tags": ["Start to finish", "New builds"],
+        "plumb_h": "Plumbing",
+        "plumb_p": "Plumbing for houses and commercial buildings, from new installs to repairs. Call about any job, big or small.",
+        "plumb_tags": ["Residential", "Commercial", "Repairs"],
+        "work_h": "Our work", "work_p": "Photos from recent jobs.",
+        "area_h": "Service area",
+        "area_p": "We're based in Federal Way and take jobs up to 2 hours from downtown Seattle, including:",
+        "area_p2": "Not sure if you're in range? Call and ask.",
+        "about_h": "About Hong's",
+        "about_p": ["Hong's General Construction and Plumbing is owned and run by Hong Phan, who has 35 years of experience in construction and plumbing.",
+                    "The business is registered in Washington as both a construction contractor and a plumbing contractor, and is fully insured and bonded."],
+        "facts": [("Construction contractor", CC), ("Plumbing contractor", PC),
+                  ("Insurance", "Insured and bonded"), ("Service area", "Up to 2 hours from downtown Seattle")],
+        "contact_h": "Get in touch",
+        "contact_p": "Tell us about your project and we'll get back to you. For anything urgent, call.",
+        "phone_l": "Phone", "email_l": "Email",
+        "f_name": "Name", "f_phone": "Phone", "f_email": "Email", "f_city": "City",
+        "f_type": "What do you need?",
+        "f_types": ["New home construction", "Residential plumbing", "Commercial plumbing", "Something else"],
+        "f_msg": "Message", "f_msg_ph": "A few details about the job", "f_send": "Send message",
+        "f_subject": "New estimate request · website",
+        "f_sending": "Sending…",
+        "f_ok": f"Thanks, we got your message. Hong will reach out soon. If it's urgent, call {PHONE}.",
+        "f_err": f"That didn't send. Please call {PHONE} or email {EMAIL}.",
+        "foot_reg": f"WA Contractor Reg. {CC} · WA Plumbing Contractor {PC}",
+    },
+    "vi": {
+        "html_lang": "vi",
+        "title": "Hong's General Construction & Plumbing · Xây nhà mới & Ống nước · Khu vực Seattle",
+        "meta": "Xây nhà mới trọn gói từ đầu đến cuối, cùng dịch vụ ống nước cho nhà ở và cơ sở thương mại. 35 năm kinh nghiệm, có bảo hiểm và bảo lãnh. Phục vụ khu vực Seattle. Gọi 206-227-2275.",
+        "skip": "Đến nội dung chính",
+        "nav": [("services", "Dịch vụ"), ("work", "Công trình"), ("area", "Khu vực"), ("about", "Giới thiệu"), ("contact", "Liên hệ")],
+        "lang_label": "English", "lang_code": "en", "lang_href": "../",
+        "call": "Gọi",
+        "logo_alt": "Hong's General Construction and Plumbing",
+        "eyebrow": "Trụ sở tại Federal Way · phục vụ khu vực Seattle",
+        "h1": "Xây nhà mới trọn gói từ đầu đến cuối. Ống nước cho nhà ở và doanh nghiệp.",
+        "lede": "35 năm kinh nghiệm. Đăng ký với Sở Lao động và Kỹ nghệ Washington (L&I), có bảo hiểm và bảo lãnh đầy đủ.",
+        "cta_call": f"Gọi {PHONE}", "cta_quote": "Yêu cầu báo giá",
+        "photo_alt": "Ông Hong điều khiển máy xúc tại công trường",
+        "trust_label": "Thông tin chính",
+        "trust": [("35 năm", "kinh nghiệm"), ("Bảo hiểm & bảo lãnh", "đầy đủ"),
+                  ("Seattle + 2 giờ", "khu vực phục vụ"), ("English · Tiếng Việt", "chúng tôi nói cả hai")],
+        "svc_h": "Dịch vụ của chúng tôi",
+        "svc_p": "Xây dựng và ống nước do cùng một công ty đảm nhận. Đội ngũ xây nhà cho quý khách cũng là đội làm hệ thống ống nước.",
+        "home_h": "Xây nhà mới",
+        "home_p": "Chúng tôi xây nhà mới từ nền móng. Một nhà thầu quản lý toàn bộ dự án, từ ngày khởi công đến ngày quý khách dọn vào.",
+        "home_tags": ["Trọn gói", "Nhà xây mới"],
+        "plumb_h": "Ống nước",
+        "plumb_p": "Dịch vụ ống nước cho nhà ở và tòa nhà thương mại, từ lắp đặt mới đến sửa chữa. Việc lớn hay nhỏ, cứ gọi cho chúng tôi.",
+        "plumb_tags": ["Nhà ở", "Thương mại", "Sửa chữa"],
+        "work_h": "Công trình", "work_p": "Hình ảnh từ các công trình gần đây.",
+        "area_h": "Khu vực phục vụ",
+        "area_p": "Trụ sở của chúng tôi ở Federal Way. Chúng tôi nhận công trình trong vòng 2 giờ lái xe từ trung tâm Seattle, bao gồm:",
+        "area_p2": "Không chắc nơi của quý khách có nằm trong khu vực? Cứ gọi hỏi.",
+        "about_h": "Về Hong's",
+        "about_p": ["Hong's General Construction and Plumbing do ông Hong Phan làm chủ và điều hành. Ông có 35 năm kinh nghiệm trong xây dựng và ống nước.",
+                    "Công ty đăng ký tại Washington với tư cách nhà thầu xây dựng và nhà thầu ống nước, có bảo hiểm và bảo lãnh đầy đủ."],
+        "facts": [("Nhà thầu xây dựng", CC), ("Nhà thầu ống nước", PC),
+                  ("Bảo hiểm", "Có bảo hiểm và bảo lãnh"), ("Khu vực phục vụ", "Trong vòng 2 giờ từ trung tâm Seattle")],
+        "contact_h": "Liên hệ",
+        "contact_p": "Hãy cho chúng tôi biết về công trình của quý khách, chúng tôi sẽ liên lạc lại. Việc gấp, xin gọi điện.",
+        "phone_l": "Điện thoại", "email_l": "Email",
+        "f_name": "Họ tên", "f_phone": "Điện thoại", "f_email": "Email", "f_city": "Thành phố",
+        "f_type": "Quý khách cần gì?",
+        "f_types": ["Xây nhà mới", "Ống nước nhà ở", "Ống nước thương mại", "Việc khác"],
+        "f_msg": "Lời nhắn", "f_msg_ph": "Vài chi tiết về công việc", "f_send": "Gửi",
+        "f_subject": "[VI] Yêu cầu báo giá mới · website",
+        "f_sending": "Đang gửi…",
+        "f_ok": f"Cảm ơn quý khách, chúng tôi đã nhận được tin nhắn và sẽ liên lạc sớm. Việc gấp, xin gọi {PHONE}.",
+        "f_err": f"Không gửi được. Xin gọi {PHONE} hoặc email {EMAIL}.",
+        "foot_reg": f"Số đăng ký nhà thầu WA {CC} · Nhà thầu ống nước WA {PC}",
+    },
+}
+
+HOUSE_SVG = '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 22 24 7l18 15v19H6z" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"/><path d="M19 41V28h10v13" fill="none" stroke="currentColor" stroke-width="3.5"/></svg>'
+PIPE_SVG = '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 14h20a10 10 0 0 1 10 10v4" fill="none" stroke="currentColor" stroke-width="4"/><path d="M36 33c-2.5 3.5-5 6.4-5 8.6a5 5 0 0 0 10 0c0-2.2-2.5-5.1-5-8.6z" fill="currentColor"/></svg>'
+
+
+def e(s):
+    return escape(s, quote=True)
+
+
+def seo(lang):
+    c = COPY[lang]
+    url = BASE if lang == "en" else BASE + "vi/"
+    og_locale = "en_US" if lang == "en" else "vi_VN"
+    ld = {
+        "@context": "https://schema.org",
+        "@type": ["GeneralContractor", "Plumber"],
+        "@id": BASE + "#business",
+        "name": "Hong's General Construction & Plumbing",
+        "url": BASE,
+        "logo": BASE + "assets/img/icon-512.png",
+        "image": BASE + "assets/img/og-image.jpg",
+        "telephone": "+1-206-227-2275",
+        "email": EMAIL,
+        "description": COPY["en"]["meta"],
+        "founder": {"@type": "Person", "name": "Hong Phan"},
+        "address": {"@type": "PostalAddress", "addressLocality": "Federal Way", "addressRegion": "WA", "addressCountry": "US"},
+        "areaServed": [{"@type": "City", "name": f"{x}, WA"} for x in CITIES],
+        "knowsLanguage": ["en", "vi"],
+        "identifier": [
+            {"@type": "PropertyValue", "name": "WA L&I Construction Contractor Registration", "value": CC},
+            {"@type": "PropertyValue", "name": "WA L&I Plumbing Contractor Registration", "value": PC},
+        ],
+        "makesOffer": [
+            {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "New home construction"}},
+            {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Residential plumbing"}},
+            {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Commercial plumbing"}},
+            {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Plumbing repair"}},
+        ],
+    }
+    return f'''<link rel="canonical" href="{url}">
+<link rel="alternate" hreflang="en" href="{BASE}">
+<link rel="alternate" hreflang="vi" href="{BASE}vi/">
+<link rel="alternate" hreflang="x-default" href="{BASE}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Hong's General Construction &amp; Plumbing">
+<meta property="og:title" content="{e(c["title"])}">
+<meta property="og:description" content="{e(c["meta"])}">
+<meta property="og:url" content="{url}">
+<meta property="og:image" content="{BASE}assets/img/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="{og_locale}">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>'''
+
+
+def page(lang):
+    c = COPY[lang]
+    r = "" if lang == "en" else "../"  # relative root so the site works under any base path
+    nav = "".join(f'<a href="#{i}">{e(t)}</a>' for i, t in c["nav"] if i != "work" or WORK_PHOTOS)
+    trust = "".join(f"<li><strong>{e(a)}</strong><span>{e(b)}</span></li>" for a, b in c["trust"])
+    tags = lambda xs: '<ul class="tags">' + "".join(f"<li>{e(x)}</li>" for x in xs) + "</ul>"
+    cities = "".join(f"<li>{e(x)}</li>" for x in CITIES)
+    about = "".join(f"<p>{e(p)}</p>" for p in c["about_p"])
+    facts = "".join(f"<div><dt>{e(a)}</dt><dd>{e(b)}</dd></div>" for a, b in c["facts"])
+    types = "".join(f"<option>{e(x)}</option>" for x in c["f_types"])
+    work = ""
+    if WORK_PHOTOS:
+        imgs = "".join(f'<img src="{r}assets/img/work/{f}" alt="{e(alt[lang])}" loading="lazy" width="800" height="600">' for f, alt in WORK_PHOTOS)
+        work = f'''
+  <section class="sec alt" id="work" aria-labelledby="work-h">
+    <div class="in">
+      <div class="sec-head"><h2 id="work-h">{e(c["work_h"])}</h2><p>{e(c["work_p"])}</p></div>
+      <div class="gallery">{imgs}</div>
+    </div>
+  </section>'''
+    area_cls = "sec area" if WORK_PHOTOS else "sec area alt"
+
+    return f'''<!doctype html>
+<html lang="{c["html_lang"]}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{e(c["title"])}</title>
+<meta name="description" content="{e(c["meta"])}">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="{r}favicon.svg" type="image/svg+xml">
+<link rel="icon" href="{r}assets/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="{r}apple-touch-icon.png">
+<link rel="preload" href="{r}assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="{r}assets/css/fonts.css">
+<link rel="stylesheet" href="{r}assets/css/site.css">
+{seo(lang)}
+</head>
+<body>
+<a class="skip" href="#main">{e(c["skip"])}</a>
+<header class="top">
+  <div class="in">
+    <a class="brand" href="{r or './'}" aria-label="{e(c["logo_alt"])}"><img src="{r}assets/img/hongs-mark-96.png" srcset="{r}assets/img/hongs-mark-96.png 1x, {r}assets/img/hongs-mark-192.png 2x" alt="" width="129" height="48"></a>
+    <nav aria-label="Main">{nav}</nav>
+    <a class="lang" href="{c["lang_href"]}" lang="{c["lang_code"]}" hreflang="{c["lang_code"]}">{e(c["lang_label"])}</a>
+    <a class="btn primary" href="{TEL}">{e(c["call"])}<span class="long">&nbsp;{PHONE}</span></a>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="grid">
+      <div class="hero-copy">
+        <img class="hero-logo" src="{r}assets/img/hongs-logo-full-600.webp" srcset="{r}assets/img/hongs-logo-full-600.webp 600w, {r}assets/img/hongs-logo-full-1200.webp 1200w" sizes="(max-width:820px) 92vw, 540px" alt="{e(c["logo_alt"])}" width="600" height="400" fetchpriority="high">
+        <p class="eyebrow">{e(c["eyebrow"])}</p>
+        <h1>{e(c["h1"])}</h1>
+        <p class="lede">{e(c["lede"])}</p>
+        <div class="ctas">
+          <a class="btn primary" href="{TEL}">{e(c["cta_call"])}</a>
+          <a class="btn ghost" href="#contact">{e(c["cta_quote"])}</a>
+        </div>
+      </div>
+      <figure class="hero-photo"><img src="{r}assets/img/hong-excavator.jpg" alt="{e(c["photo_alt"])}" width="720" height="960"></figure>
+    </div>
+  </section>
+
+  <section class="trust" aria-label="{e(c["trust_label"])}">
+    <ul class="in">{trust}</ul>
+  </section>
+
+  <section class="sec" id="services" aria-labelledby="svc-h">
+    <div class="in">
+      <div class="sec-head"><h2 id="svc-h">{e(c["svc_h"])}</h2><p>{e(c["svc_p"])}</p></div>
+      <div class="cards">
+        <article class="card">{HOUSE_SVG}<h3>{e(c["home_h"])}</h3><p>{e(c["home_p"])}</p>{tags(c["home_tags"])}</article>
+        <article class="card">{PIPE_SVG}<h3>{e(c["plumb_h"])}</h3><p>{e(c["plumb_p"])}</p>{tags(c["plumb_tags"])}</article>
+      </div>
+    </div>
+  </section>
+{work}
+  <section class="{area_cls}" id="area" aria-labelledby="area-h">
+    <div class="in">
+      <div><div class="sec-head"><h2 id="area-h">{e(c["area_h"])}</h2></div><p>{e(c["area_p"])}</p></div>
+      <div><ul class="cities">{cities}</ul><p style="margin-top:18px">{e(c["area_p2"])}</p></div>
+    </div>
+  </section>
+
+  <section class="sec about" id="about" aria-labelledby="about-h">
+    <div class="in">
+      <div><div class="sec-head"><h2 id="about-h">{e(c["about_h"])}</h2></div>{about}</div>
+      <dl class="facts">{facts}</dl>
+    </div>
+  </section>
+
+  <section class="sec contact" id="contact" aria-labelledby="contact-h">
+    <div class="in">
+      <div>
+        <div class="sec-head"><h2 id="contact-h">{e(c["contact_h"])}</h2><p>{e(c["contact_p"])}</p></div>
+        <div class="reach">
+          <a href="{TEL}"><span>{e(c["phone_l"])}</span>{PHONE}</a>
+          <a href="mailto:{EMAIL}"><span>{e(c["email_l"])}</span>{EMAIL}</a>
+        </div>
+      </div>
+      <form id="estimate" action="https://api.web3forms.com/submit" method="POST"
+            data-sending="{e(c["f_sending"])}" data-ok="{e(c["f_ok"])}" data-err="{e(c["f_err"])}">
+        <input type="hidden" name="access_key" value="{WEB3FORMS_KEY}">
+        <input type="hidden" name="subject" value="{e(c["f_subject"])}">
+        <input type="hidden" name="from_name" value="Hong's website">
+        <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <label><span>{e(c["f_name"])} <span class="req" aria-hidden="true">*</span></span><input name="name" autocomplete="name" required></label>
+        <label><span>{e(c["f_phone"])} <span class="req" aria-hidden="true">*</span></span><input name="phone" type="tel" autocomplete="tel" required></label>
+        <label>{e(c["f_email"])}<input name="email" type="email" autocomplete="email"></label>
+        <label>{e(c["f_city"])}<input name="city" autocomplete="address-level2"></label>
+        <label class="full">{e(c["f_type"])}<select name="job_type">{types}</select></label>
+        <label class="full">{e(c["f_msg"])}<textarea name="message" placeholder="{e(c["f_msg_ph"])}"></textarea></label>
+        <button class="btn primary" type="submit">{e(c["f_send"])}</button>
+        <p class="status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="in">
+    <p><strong>Hong's General Construction &amp; Plumbing</strong> · <a href="{TEL}">{PHONE}</a> · <a href="mailto:{EMAIL}">{EMAIL}</a></p>
+    <p>{e(c["foot_reg"])}</p>
+  </div>
+</footer>
+<script src="{r}assets/js/site.js" defer></script>
+</body>
+</html>
+'''
+
+
+if __name__ == "__main__":
+    (SITE / "index.html").write_text(page("en"))
+    (SITE / "vi").mkdir(exist_ok=True)
+    (SITE / "vi" / "index.html").write_text(page("vi"))
+    (SITE / "CNAME").write_text("hongsgcpl.com\n")
+    (SITE / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {BASE}sitemap.xml\n")
+    alt = f'<xhtml:link rel="alternate" hreflang="en" href="{BASE}"/><xhtml:link rel="alternate" hreflang="vi" href="{BASE}vi/"/>'
+    (SITE / "sitemap.xml").write_text(
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
+        f'  <url><loc>{BASE}</loc>{alt}</url>\n'
+        f'  <url><loc>{BASE}vi/</loc>{alt}</url>\n'
+        '</urlset>\n')
+    print("wrote index.html, vi/index.html")
