@@ -20,6 +20,11 @@ EMAIL = "estimates@hongsgcpl.com"
 CC = "HONGSGC825B5"
 PC = "HONGSGC791O7"
 CITIES = ["Seattle", "Bellevue", "Tacoma", "Everett", "Kent", "Federal Way", "Renton", "Auburn"]
+# Hong's public listings: footer links + schema.org sameAs. Add Yelp and Google here only once
+# each is publicly visible (Yelp pending moderator approval, Google pending video verification).
+SOCIAL = [("Facebook", "https://www.facebook.com/hongsgeneralconstruction")]
+
+SOCIAL_LINKS = " · ".join(f'<a href="{u}">{n}</a>' for n, u in SOCIAL)
 
 # Analytics, both in Hong's own Google account (hongtphan@gmail.com, Anh added as admin).
 # Empty ID = that tag is left out. The privacy page names both, so change them together.
@@ -182,6 +187,7 @@ def seo(lang):
         "address": {"@type": "PostalAddress", "addressLocality": "Federal Way", "addressRegion": "WA", "addressCountry": "US"},
         "areaServed": [{"@type": "City", "name": f"{x}, WA"} for x in CITIES],
         "knowsLanguage": ["en", "vi"],
+        "sameAs": [u for _, u in SOCIAL],
         "identifier": [
             {"@type": "PropertyValue", "name": "WA L&I Construction Contractor Registration", "value": CC},
             {"@type": "PropertyValue", "name": "WA L&I Plumbing Contractor Registration", "value": PC},
@@ -347,7 +353,7 @@ def page(lang):
 
 <footer class="foot">
   <div class="in">
-    <p><strong>Hong's General Construction &amp; Plumbing</strong> · <a href="{TEL}">{PHONE}</a> · <a href="mailto:{EMAIL}">{EMAIL}</a></p>
+    <p><strong>Hong's General Construction &amp; Plumbing</strong> · <a href="{TEL}">{PHONE}</a> · <a href="mailto:{EMAIL}">{EMAIL}</a> · {SOCIAL_LINKS}</p>
     <p>{e(c["foot_reg"])} · <a href="{r}privacy/" lang="en" hreflang="en">Privacy policy</a></p>
   </div>
 </footer>
@@ -403,7 +409,7 @@ def privacy_page():
 </main>
 <footer class="foot">
   <div class="in">
-    <p><strong>Hong's General Construction &amp; Plumbing</strong> · <a href="{TEL}">{PHONE}</a> · <a href="mailto:{EMAIL}">{EMAIL}</a></p>
+    <p><strong>Hong's General Construction &amp; Plumbing</strong> · <a href="{TEL}">{PHONE}</a> · <a href="mailto:{EMAIL}">{EMAIL}</a> · {SOCIAL_LINKS}</p>
     <p><a href="../">Home</a> · <a href="../vi/" lang="vi" hreflang="vi">Tiếng Việt</a></p>
   </div>
 </footer>
