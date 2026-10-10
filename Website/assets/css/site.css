@@ -147,3 +147,8 @@ form .btn[disabled]{opacity:.6;cursor:wait}
 /* Vietnamese stacks diacritics above caps; give headings room */
 :lang(vi) h1,:lang(vi) h2,:lang(vi) h3{line-height:1.22}
 .foot a{white-space:nowrap}
+/* privacy page */
+.prose{max-width:760px}
+.prose h1{font-size:clamp(32px,5vw,44px);line-height:1.1;margin:0 0 16px}
+.prose h2{font-size:22px;margin:32px 0 8px}
+.prose p{margin:0 0 12px}
