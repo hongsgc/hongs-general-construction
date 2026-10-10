@@ -1,5 +1,167 @@
 [
  {
+  "cat": "residential",
+  "full": "residential-img-1751.jpg",
+  "w": 1600,
+  "h": 1207,
+  "sm": "residential-img-1751-sm.jpg",
+  "sw": 800,
+  "sh": 604
+ },
+ {
+  "cat": "residential",
+  "full": "residential-6caa85fa-03ee-44d1-80f3-8316af2b3047.jpg",
+  "w": 1200,
+  "h": 1600,
+  "sm": "residential-6caa85fa-03ee-44d1-80f3-8316af2b3047-sm.jpg",
+  "sw": 600,
+  "sh": 800
+ },
+ {
+  "cat": "residential",
+  "full": "residential-addition-frond-house-second-floor-finish.jpg",
+  "w": 1600,
+  "h": 1062,
+  "sm": "residential-addition-frond-house-second-floor-finish-sm.jpg",
+  "sw": 800,
+  "sh": 531
+ },
+ {
+  "cat": "residential",
+  "full": "residential-addition-room-to-buil.jpg",
+  "w": 574,
+  "h": 460,
+  "sm": "residential-addition-room-to-buil.jpg",
+  "sw": 574,
+  "sh": 460
+ },
+ {
+  "cat": "residential",
+  "full": "residential-addition-wall-frame-2.jpg",
+  "w": 640,
+  "h": 363,
+  "sm": "residential-addition-wall-frame-2.jpg",
+  "sw": 640,
+  "sh": 363
+ },
+ {
+  "cat": "residential",
+  "full": "residential-camera-280.jpg",
+  "w": 1600,
+  "h": 1202,
+  "sm": "residential-camera-280-sm.jpg",
+  "sw": 800,
+  "sh": 601
+ },
+ {
+  "cat": "residential",
+  "full": "residential-dsc-2520.jpg",
+  "w": 1600,
+  "h": 1068,
+  "sm": "residential-dsc-2520-sm.jpg",
+  "sw": 800,
+  "sh": 534
+ },
+ {
+  "cat": "residential",
+  "full": "residential-img-0785.jpg",
+  "w": 1200,
+  "h": 1600,
+  "sm": "residential-img-0785-sm.jpg",
+  "sw": 600,
+  "sh": 800
+ },
+ {
+  "cat": "residential",
+  "full": "residential-img-0789.jpg",
+  "w": 1200,
+  "h": 1600,
+  "sm": "residential-img-0789-sm.jpg",
+  "sw": 600,
+  "sh": 800
+ },
+ {
+  "cat": "residential",
+  "full": "residential-img-0960.jpg",
+  "w": 1200,
+  "h": 1600,
+  "sm": "residential-img-0960-sm.jpg",
+  "sw": 600,
+  "sh": 800
+ },
+ {
+  "cat": "residential",
+  "full": "residential-img-0986.jpg",
+  "w": 1200,
+  "h": 1600,
+  "sm": "residential-img-0986-sm.jpg",
+  "sw": 600,
+  "sh": 800
+ },
+ {
+  "cat": "residential",
+  "full": "residential-img-2610.jpg",
+  "w": 1200,
+  "h": 1600,
+  "sm": "residential-img-2610-sm.jpg",
+  "sw": 600,
+  "sh": 800
+ },
+ {
+  "cat": "residential",
+  "full": "residential-img-7509.jpg",
+  "w": 1200,
+  "h": 1600,
+  "sm": "residential-img-7509-sm.jpg",
+  "sw": 600,
+  "sh": 800
+ },
+ {
+  "cat": "residential",
+  "full": "residential-img-9616.jpg",
+  "w": 1600,
+  "h": 1126,
+  "sm": "residential-img-9616-sm.jpg",
+  "sw": 800,
+  "sh": 563
+ },
+ {
+  "cat": "commercial",
+  "full": "commercial-img-0044.jpg",
+  "w": 1600,
+  "h": 1200,
+  "sm": "commercial-img-0044-sm.jpg",
+  "sw": 800,
+  "sh": 600
+ },
+ {
+  "cat": "commercial",
+  "full": "commercial-img-7132.jpg",
+  "w": 1200,
+  "h": 1600,
+  "sm": "commercial-img-7132-sm.jpg",
+  "sw": 600,
+  "sh": 800
+ },
+ {
+  "cat": "commercial",
+  "full": "commercial-img-7134.jpg",
+  "w": 1600,
+  "h": 865,
+  "sm": "commercial-img-7134-sm.jpg",
+  "sw": 800,
+  "sh": 432
+ },
+ {
+  "cat": "commercial",
+  "full": "commercial-img-8738.jpg",
+  "w": 1200,
+  "h": 1600,
+  "sm": "commercial-img-8738-sm.jpg",
+  "sw": 600,
+  "sh": 800
+ },
+ {
   "cat": "salons",
   "full": "salons-dsc-2550.jpg",
   "w": 1600,
@@ -55,6 +217,42 @@
  },
  {
   "cat": "salons",
+  "full": "salons-img-2530.jpg",
+  "w": 1200,
+  "h": 1600,
+  "sm": "salons-img-2530-sm.jpg",
+  "sw": 600,
+  "sh": 800
+ },
+ {
+  "cat": "salons",
+  "full": "salons-img-2536.jpg",
+  "w": 1200,
+  "h": 1600,
+  "sm": "salons-img-2536-sm.jpg",
+  "sw": 600,
+  "sh": 800
+ },
+ {
+  "cat": "salons",
+  "full": "salons-img-2861.jpg",
+  "w": 1600,
+  "h": 444,
+  "sm": "salons-img-2861-sm.jpg",
+  "sw": 800,
+  "sh": 222
+ },
+ {
+  "cat": "salons",
+  "full": "salons-img-2866.jpg",
+  "w": 1600,
+  "h": 390,
+  "sm": "salons-img-2866-sm.jpg",
+  "sw": 800,
+  "sh": 195
+ },
+ {
+  "cat": "salons",
   "full": "salons-img-3771.jpg",
   "w": 480,
   "h": 640,
@@ -63,48 +261,30 @@
   "sh": 640
  },
  {
-  "cat": "homes",
-  "full": "homes-dsc-2520.jpg",
+  "cat": "salons",
+  "full": "salons-img-3854.jpg",
   "w": 1600,
-  "h": 1068,
-  "sm": "homes-dsc-2520-sm.jpg",
+  "h": 651,
+  "sm": "salons-img-3854-sm.jpg",
   "sw": 800,
-  "sh": 534
+  "sh": 326
  },
  {
-  "cat": "homes",
-  "full": "homes-addition-frond-house-second-floor-finish.jpg",
+  "cat": "salons",
+  "full": "salons-liner-with.jpg",
   "w": 1600,
-  "h": 1062,
-  "sm": "homes-addition-frond-house-second-floor-finish-sm.jpg",
+  "h": 696,
+  "sm": "salons-liner-with-sm.jpg",
   "sw": 800,
-  "sh": 531
+  "sh": 348
  },
  {
-  "cat": "homes",
-  "full": "homes-addition-room-to-buil.jpg",
-  "w": 574,
-  "h": 460,
-  "sm": "homes-addition-room-to-buil.jpg",
-  "sw": 574,
-  "sh": 460
- },
- {
-  "cat": "homes",
-  "full": "homes-addition-wall-frame-2.jpg",
-  "w": 640,
-  "h": 363,
-  "sm": "homes-addition-wall-frame-2.jpg",
-  "sw": 640,
-  "sh": 363
- },
- {
-  "cat": "homes",
-  "full": "homes-camera-280.jpg",
-  "w": 1600,
-  "h": 1202,
-  "sm": "homes-camera-280-sm.jpg",
-  "sw": 800,
-  "sh": 601
+  "cat": "restaurants",
+  "full": "restaurants-1587f804-5a50-4d1c-8b34-ab8c07b83d5e.jpg",
+  "w": 1200,
+  "h": 1600,
+  "sm": "restaurants-1587f804-5a50-4d1c-8b34-ab8c07b83d5e-sm.jpg",
+  "sw": 600,
+  "sh": 800
  }
 ]

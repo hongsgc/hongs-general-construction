@@ -3,7 +3,7 @@
 
     python3 Website/source/sync_photos.py
 
-Reads  ~/Desktop/Hongs Selected Photos/<Category>/*.jpg  (one subfolder per category in CATEGORIES)
+Reads  ~/Desktop/Hongs Selected Photos/<Category>/*.jpg|heic|png  (one subfolder per category in CATEGORIES)
 Writes Website/assets/img/work/<slug>.jpg (max 1600px, for the full-size view)
        Website/assets/img/work/<slug>-sm.jpg (max 800px, for the grid; skipped when the photo is already small)
        Website/source/work_photos.json (what build_pages.py renders)
@@ -14,6 +14,7 @@ import json
 import re
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 from PIL import Image, ImageOps
@@ -24,9 +25,9 @@ OUT = SITE / "assets" / "img" / "work"
 MANIFEST = Path(__file__).resolve().parent / "work_photos.json"
 
 # Desktop subfolder -> category key (labels live in build_pages.py). Order here is the order on the page.
-CATEGORIES = {"Nail Salons": "salons", "Homes": "homes", "Restaurants": "restaurants"}
-# Shown first in their category (Anh's picks, 2026-10-09). Everything else sorts by file name.
-FEATURED = ["DSC_2550.JPG", "DSC_2520.JPG"]
+CATEGORIES = {"Residential": "residential", "Commercial": "commercial", "Nail Salons": "salons", "Restaurants": "restaurants"}
+# Shown first in their category (salons: Anh 2026-10-09; residential: finished new home, 2026-10-10). Everything else sorts by file name.
+FEATURED = ["DSC_2550.JPG", "IMG_1751.heic"]
 EXTS = {".jpg", ".jpeg", ".png", ".heic", ".webp"}
 FULL, SMALL = 1600, 800
 
@@ -58,6 +59,16 @@ def trim_scan_border(im):
     return im.crop((l, t, r, b))
 
 
+def open_photo(f, tmp):
+    """Open any photo; HEIC (iPhone) goes through macOS sips first since Pillow can't read it."""
+    if f.suffix.lower() == ".heic":
+        out = Path(tmp) / (f.stem + ".jpg")
+        subprocess.run(["sips", "-s", "format", "jpeg", "-s", "formatOptions", "best", str(f), "--out", str(out)],
+                       check=True, capture_output=True)
+        f = out
+    return ImageOps.exif_transpose(Image.open(f)).convert("RGB")
+
+
 def save(im, path, size):
     im = im.copy()
     im.thumbnail((size, size))
@@ -81,7 +92,8 @@ def main():
                        key=lambda f: (f.name not in FEATURED, f.name.lower()))
         for f in files:
             slug = slugify(cat, f.name)
-            im = trim_scan_border(ImageOps.exif_transpose(Image.open(f)).convert("RGB"))
+            with tempfile.TemporaryDirectory() as tmp:
+                im = trim_scan_border(open_photo(f, tmp))
             full = f"{slug}.jpg"
             fw, fh = save(im, OUT / full, FULL)
             written.add(full)
