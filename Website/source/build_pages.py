@@ -38,13 +38,13 @@ PRIVACY_DATE = "October 13, 2026"
 CONSENT = {
     "en": {
         "label": "Cookie consent",
-        "text": "We use Google Analytics to count visits and see which pages are useful. It only runs if you accept.",
+        "text": "We use Google Analytics cookies to count visits and see which pages are useful. They’re only set if you accept.",
         "privacy": "Privacy policy",
         "accept": "Accept", "decline": "No thanks", "settings": "Cookie settings",
     },
     "vi": {
         "label": "Lựa chọn cookie",
-        "text": "Chúng tôi dùng Google Analytics để đếm lượt truy cập và xem trang nào hữu ích. Công cụ này chỉ chạy khi bạn đồng ý.",
+        "text": "Chúng tôi dùng cookie của Google Analytics để đếm lượt truy cập và xem trang nào hữu ích. Cookie chỉ được lưu khi bạn đồng ý.",
         "privacy": "Chính sách quyền riêng tư (tiếng Anh)",
         "accept": "Đồng ý", "decline": "Không, cảm ơn", "settings": "Cài đặt cookie",
     },
